@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: se.lth.cs.jastaddxtext.aspect.ui
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: se.lth.cs.jastaddxtext.aspect.ui; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: se.lth.cs.jastaddxtext.aspect,
+ se.lth.cs.jastaddxtext.aspect.ide,
+ org.eclipse.xtext.ui,
+ org.eclipse.xtext.ui.shared,
+ org.eclipse.xtext.ui.codetemplates.ui,
+ org.eclipse.ui.editors;bundle-version="3.5.0",
+ org.eclipse.ui.ide;bundle-version="3.5.0",
+ org.eclipse.ui,
+ org.eclipse.compare,
+ org.eclipse.xtext.builder,
+ org.eclipse.xtend.lib;resolution:=optional,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtext.common.types.ui,
+ org.eclipse.xtext.xbase.ui,
+ org.eclipse.jdt.debug.ui,
+ se.lth.cs.jastaddxtext.javaRAG.ast;bundle-version="1.0.0"
+Import-Package: org.apache.log4j
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: se.lth.cs.jastaddxtext.aspect.ui.quickfix,
+ se.lth.cs.jastaddxtext.aspect.ui.contentassist,
+ se.lth.cs.jastaddxtext.aspect.ui.internal
+Bundle-Activator: se.lth.cs.jastaddxtext.aspect.ui.internal.AspectActivator

@@ -1,0 +1,135 @@
+grammar se.lth.cs.jastaddxtext.aspect.Aspect with org.eclipse.xtext.xbase.Xbase
+
+generate aspect "http://www.lth.se/cs/jastaddxtext/aspect/Aspect"
+import "http://www.eclipse.org/xtext/common/JavaVMTypes" as jvmTypes
+import "http://www.lth.se/cs/jastaddxtext/javaRAG/ast/Ast" as ast
+
+Model:
+	importSection = XImportSection?
+	(aspectElements += AspectDeclaration)*	
+;
+
+AspectDeclaration:
+	'aspect' name = ID '{'
+	(statement += Statement)* '}' 
+;
+
+Statement:
+	Declaration | Refine | Rewrite |
+	CollectionContribution | NTAContribution |
+	CacheOrUncache | ImplementStatement
+;
+
+Declaration:
+	DeclarativeDeclaration | ImperativeDeclaration
+;
+
+DeclarativeDeclaration:
+	SynOrInhComponent | CollectionDeclaration
+;
+
+SynOrInhComponent:
+	SynOrInhDeclaration | Equation
+;
+
+ImperativeDeclaration:
+	InterTypeDeclaration | ClassDeclaration | InterfaceDeclaration
+;
+
+SynOrInhDeclaration:
+	SynthesizedDeclaration | InheritedDeclaration
+;
+
+SynthesizedDeclaration:
+	declType = 'syn' NTA ?= 'nta'? lazy ?= 'lazy'? 
+	type = [jvmTypes::JvmType | QualifiedName] 
+	(classRef = [ast::ClassDeclaration] | onASTNode ?= 'ASTNode'?) '.' name = ID
+	'('(params += FullJvmFormalParameter (',' params += FullJvmFormalParameter)*)? ')'
+	((circular = 'circular') '[' circularStartExpression = XExpression ']')?
+	(body = XBlockExpression | ('=' expr = XExpression ';') | ';')
+;
+
+InheritedDeclaration:
+	declType = 'inh' NTA ?= 'nta'? lazy ?= 'lazy'? 
+	type = [jvmTypes::JvmType | QualifiedName] 
+	(classRef = [ast::ClassDeclaration] | onASTNode ?= 'ASTNode'?) '.' name = ID 
+	'('(params += FullJvmFormalParameter (',' params += FullJvmFormalParameter)*)? ')' ';'
+;
+
+Equation:
+	declType = 'eq' 
+	(classRef = [ast::ClassDeclaration] | onASTNode ?= 'ASTNode'?) '.' 
+	(getName = ID '(' ')' '.')? name = ID
+	'('(params += FullJvmFormalParameter (',' params += FullJvmFormalParameter)*)? ')'
+	(body = XBlockExpression | ('=' expr = XExpression ';'))
+;
+
+CollectionDeclaration:
+	declType = 'coll' 
+	type = JvmTypeReference 
+	(classRef = [ast::ClassDeclaration] | onASTNode ?= 'ASTNode'?) '.' name = ID '(' ')'
+	('['startExpr = XExpression']')? 
+	('with' updatingMethod = XExpression)? 
+	('root' (root = [ast::ClassDeclaration] |RootonASTNode ?= 'ASTNode'?))? ';'
+;
+
+CollectionContribution:
+	(classRef = [ast::ClassDeclaration] | onASTNode ?= 'ASTNode'?) 
+	'contributes' hasMultipleValues ?= 'each'? 
+	ValueExp = XExpression 
+	('when' condExp = XExpression)?
+	'to' (targetClassRef = [ast::ClassDeclaration] | targetonASTNode ?= 'ASTNode'?) '.' targetName = ID '(' ')'
+	('for' hasMultipleTargets ?= 'each'? refExp = XExpression)? ';'
+;
+
+NTAContribution:
+	(classRef = [ast::ClassDeclaration] | onASTNode ?= 'ASTNode'?) 
+	'contributes' 'nta'  childNTA = ID '(' ')'
+	'to' (targetClassRef = [ast::ClassDeclaration] | targetonASTNode ?= 'ASTNode'?) '.' targetName = ID '(' ')' ';'
+;
+
+Refine:
+	'refine' aspectName = [AspectDeclaration] 
+	equation = Equation
+;
+
+Rewrite:
+	'rewrite' (classRef = [ast::ClassDeclaration] | onASTNode ?= 'ASTNode'?)'{' 
+	(('when' '(' condExp += XExpression ')')?
+	'to' (toClassRef += [ast::ClassDeclaration] | targetOnASTNode ?= 'ASTNode'?)
+	body += XBlockExpression)* '}'
+;
+
+CacheOrUncache:
+	cacheType = ('cache' | 'uncache') 
+	(classRef = [ast::ClassDeclaration] | onASTNode ?= 'ASTNode'?) '.' name = ID
+	 '('(params += FullJvmFormalParameter (',' params += FullJvmFormalParameter)*)? ')' ';'
+;
+
+InterTypeDeclaration:
+	isAbstract ?= 'abstract'? (visibility = visibilityType)? type = JvmTypeReference
+	(classRef = [ast::ClassDeclaration] | onASTNode ?= 'ASTNode'?) '.' name = ID 
+	'('(params += FullJvmFormalParameter (',' params += FullJvmFormalParameter)*)? ')'
+	(body = XBlockExpression | ('=' expr = XExpression ';') | ';')	
+;
+
+ClassDeclaration:
+	isAbstract ?= 'abstract'? (visibility = visibilityType)? declType = 'class' name = ID
+	(extending = 'extends' superClass = [ClassDeclaration])?	
+	(implementing = 'implements' (interfaceName += [jvmTypes::JvmType | QualifiedName] (',' interfaceName += [jvmTypes::JvmType | QualifiedName])*))?
+	body = XBlockExpression
+;
+
+enum visibilityType:
+	public | private | protected
+;
+
+InterfaceDeclaration:
+	declType = 'interface' name = ID
+	body = XBlockExpression
+;
+
+ImplementStatement:
+	classRef = [ast::ClassDeclaration] 'implements' 
+	(interfaceName += [jvmTypes:: JvmType | QualifiedName] (',' interfaceName += [jvmTypes:: JvmType | QualifiedName])*)';'
+;

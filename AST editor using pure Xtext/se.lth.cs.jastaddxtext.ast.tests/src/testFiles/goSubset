@@ -1,0 +1,59 @@
+Program ::= Global*;
+
+abstract Statement;
+abstract ControlStatement : Statement ::= [ShortStatement:Statement];
+abstract Expression ::= Type;
+abstract BinaryExpression : Expression ::= Left:Expression Right:Expression;
+abstract Arithmetic : BinaryExpression;
+abstract Condition : BinaryExpression;
+abstract Type;
+abstract Global ::= IdentifierDeclaration;
+abstract Value : Expression ::= <Value:String>;
+abstract MutableValue;
+
+FunctionDeclaration : Global ::= Parameter:IdentifierDeclaration* ReturnType:Type Body:Block;
+GlobalVariable : Global ::= Expression;
+
+FunctionCallAsStatement : Statement ::= FunctionCallAsExpression;
+FunctionCallAsExpression : Expression ::= IdentifierUse Parameter:Expression*;
+
+For : ControlStatement ::= [Cond:Expression] [Assignment] Body:Block;
+If : ControlStatement ::= Cond:Expression Body:Block [Else:Block];
+
+Assignment : Statement ::= IdentifierUse Value:Expression;
+IdentifierDeclarationStatement : Statement ::= IdentifierDeclaration [Value:Expression];
+Return : Statement ::= [Value:Expression];
+Block : Statement ::= Statement*;
+
+Add : Arithmetic;
+Sub : Arithmetic;
+Mul : Arithmetic;
+Div : Arithmetic;
+Mod : Arithmetic;
+
+Equal : Condition;
+NotEqual : Condition;
+LessEqual : Condition;
+GreaterEqual : Condition;
+Lesser : Condition;
+Greater : Condition;
+
+InferredType : Type;
+IntType : Type;
+BoolType : Type;
+FloatType : Type;
+UnknownType : Type;
+VoidType : Type;
+MismatchedType : Type;
+
+Int : Value;
+Bool : Value;
+Float64 : Value;
+NullValue : Value;
+
+Variable : MutableValue;
+Constant : MutableValue;
+
+IdentifierUse : Expression ::= <Identifier:String>;
+IdentifierDeclaration : Expression ::= <Identifier:String> MutabilityStatus:MutableValue;
+UnknownDeclaration : IdentifierDeclaration;

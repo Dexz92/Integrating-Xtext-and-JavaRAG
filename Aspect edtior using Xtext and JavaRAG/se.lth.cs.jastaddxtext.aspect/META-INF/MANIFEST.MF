@@ -1,0 +1,34 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: se.lth.cs.jastaddxtext.aspect
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: se.lth.cs.jastaddxtext.aspect; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.xtext.xbase,
+ org.eclipse.equinox.common;bundle-version="3.5.0",
+ org.eclipse.emf.ecore,
+ org.eclipse.xtext.xbase.lib,
+ org.antlr.runtime,
+ org.eclipse.xtext.util,
+ org.eclipse.xtend.lib,
+ org.eclipse.emf.common,
+ org.eclipse.xtext.common.types,
+ org.objectweb.asm;bundle-version="[5.0.1,6.0.0)";resolution:=optional,
+ se.lth.cs.jastaddxtext.javaRAG.ast;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ClassPath: lib/javarag.jar,.
+Export-Package: se.lth.cs.jastaddxtext.aspect.aspect.impl,
+ se.lth.cs.jastaddxtext.aspect.scoping,
+ se.lth.cs.jastaddxtext.aspect.generator,
+ se.lth.cs.jastaddxtext.aspect,
+ se.lth.cs.jastaddxtext.aspect.aspect.util,
+ se.lth.cs.jastaddxtext.aspect.aspect,
+ se.lth.cs.jastaddxtext.aspect.serializer,
+ se.lth.cs.jastaddxtext.aspect.parser.antlr.internal,
+ se.lth.cs.jastaddxtext.aspect.services,
+ se.lth.cs.jastaddxtext.aspect.parser.antlr,
+ se.lth.cs.jastaddxtext.aspect.validation,
+ se.lth.cs.jastaddxtext.aspect.jvmmodel
+Import-Package: org.apache.log4j

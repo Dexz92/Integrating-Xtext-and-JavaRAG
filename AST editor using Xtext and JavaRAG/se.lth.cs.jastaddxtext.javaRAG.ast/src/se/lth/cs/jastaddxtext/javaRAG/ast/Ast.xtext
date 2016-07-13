@@ -1,0 +1,52 @@
+grammar se.lth.cs.jastaddxtext.javaRAG.ast.Ast with org.eclipse.xtext.xbase.Xbase
+
+generate ast "http://www.lth.se/cs/jastaddxtext/javaRAG/ast/Ast"
+
+Model:
+	(ClassDeclaration += ClassDeclaration)*
+;
+
+Declaration:
+	ClassDeclaration | Child | UnknownDeclaration
+;
+
+UnknownDeclaration:
+	name = "!unknown"
+;
+
+ClassDeclaration:
+	abstract ?= 'abstract'? name = AST_ID 
+	(':' superclass = [ClassDeclaration])?
+	('::=' (children += Child)*)? ';'
+;
+
+Child:
+	Component | ListComponent | OptionalComponent | TokenComponent | NTA;
+
+Component:
+	(name = AST_ID ':')? type = [ClassDeclaration]
+;
+
+ListComponent:
+	Component '*'
+;
+
+OptionalComponent:
+	'[' Component ']'
+;
+
+TokenComponent:
+	'<' name = AST_ID (':' (type = tokenStdType | reference = [ClassDeclaration]))?'>'
+;
+
+NTA:
+	'/' (Component | ListComponent | OptionalComponent | TokenComponent) '/'
+;
+
+enum tokenStdType:
+	null | String | Integer
+;
+
+AST_ID:
+	ID | 'String' | 'Integer'
+;

@@ -1,0 +1,52 @@
+grammar se.lth.cs.jastaddxtext.ast.Ast with org.eclipse.xtext.common.Terminals
+
+generate ast "http://www.lth.se/cs/jastaddxtext/ast/Ast"
+
+Model:
+	(ClassDeclaration += ClassDeclaration)*
+;
+
+ClassDeclaration:
+	abstract ?= 'abstract'? name = ID 
+	(':' superclass = [ClassDeclaration])?
+	('::=' (children += Child)+)? ';'
+;
+
+Child:
+	Component | ListComponent | OptionalComponent | TokenComponent | NTA;
+
+Component:
+	(name = ID ':')? type = [ClassDeclaration]
+;
+
+ListComponent:
+	Component '*'
+;
+
+OptionalComponent:
+	'[' Component ']'
+;
+
+TokenComponent:
+	'<' name = ID (':' (type = tokenStdType | reference = [ClassDeclaration]))?'>'
+;
+
+NTA:
+	'/' Component '*'? '/'
+;
+
+enum tokenStdType: String | Integer;
+
+/*
+A; 					AST class
+B: S; 				AST subclass (B is a subclass of S)
+abstract A; 		AST class, abstract
+B ::= Y; 			Child component Y.
+B ::= MyY:Y; 		Child component MyY of type Y.
+X ::= C*; 			List component C, containing C nodes.
+X ::= MyC:C*; 		List component MyC, containing C nodes.
+Y ::= [D]; 			Optional component D.
+Y ::= [MyD:D]; 		Optional component MyD of type D.
+Z ::= <E>; 			Token component E of type String.
+Z ::= <F:Integer>; 	Token component F of type Integer.
+*/
